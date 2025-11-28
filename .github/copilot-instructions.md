@@ -1,3 +1,9 @@
+# Copilot Instructions
+
+The following is the project README, which describes the architecture, tech stack, and goals of the project. Use this context when generating code or answering questions.
+
+---
+
 # YouTube Recipe Processor
 
 A full-stack web application that allows users to convert YouTube cooking videos into structured recipes using Gemini 3 AI.
