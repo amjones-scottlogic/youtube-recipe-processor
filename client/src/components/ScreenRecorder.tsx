@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+// @ts-ignore
+import fixWebmDuration from 'fix-webm-duration';
 
 interface RecorderInstance {
   mediaRecorder: MediaRecorder | null;
@@ -18,8 +20,8 @@ export function ScreenRecorder() {
   const isStartingRef = useRef(false);
   const saveRequestRef = useRef<{ id: 1 | 2 } | null>(null);
   
-  const CYCLE_MS = 60000; // 60s recording cycles
-  const STAGGER_MS = 30000; // Start second recorder 30s later
+  const CYCLE_MS = 30000; // 30s recording cycles
+  const STAGGER_MS = 15000; // Start second recorder 15s later
 
   const startRecording = async () => {
     if (isStartingRef.current || streamRef.current) return;
@@ -69,11 +71,11 @@ export function ScreenRecorder() {
     // Clean up previous timer if any
     if (recorderRef.current.timer) clearTimeout(recorderRef.current.timer);
 
-    // Prefer MP4 for better compatibility with AI models, fall back to WebM
+    // Prefer WebM for stability (fixes yellow screen issue in Chrome/MP4), fall back to MP4
     const mimeType = [
-      'video/mp4',
       'video/webm;codecs=vp9',
-      'video/webm'
+      'video/webm',
+      'video/mp4'
     ].find(t => MediaRecorder.isTypeSupported(t));
 
     const mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
@@ -93,7 +95,15 @@ export function ScreenRecorder() {
         const type = mediaRecorder.mimeType;
         const ext = type.includes('mp4') ? 'mp4' : 'webm';
         const blob = new Blob(recorderRef.current.chunks, { type });
-        downloadBlob(blob, `replay.${ext}`);
+        
+        if (ext === 'webm') {
+          const duration = Date.now() - recorderRef.current.startTime;
+          fixWebmDuration(blob, duration, (fixedBlob: Blob) => {
+            downloadBlob(fixedBlob, `replay.${ext}`);
+          });
+        } else {
+          downloadBlob(blob, `replay.${ext}`);
+        }
         saveRequestRef.current = null;
       }
 
@@ -103,7 +113,7 @@ export function ScreenRecorder() {
       }
     };
 
-    mediaRecorder.start();
+    mediaRecorder.start(1000);
 
     // Schedule automatic restart
     recorderRef.current.timer = setTimeout(() => {
