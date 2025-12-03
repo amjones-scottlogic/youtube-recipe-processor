@@ -1,10 +1,12 @@
 {
 	"servers": {
-		"my-mcp-server-ae6831b5": {
+		"youtube-recipe-mcp": {
 			"type": "stdio",
 			"command": "bun",
-			"cwd": "${workspaceFolder}/mcp-server/",
-			"args": ["src/index.ts"]
+			"cwd": "${workspaceFolder}/mcp-server",
+			"args": [
+				"src/index.ts"
+			]
 		}
 	},
 	"inputs": []
