@@ -1,0 +1,11 @@
+{
+	"servers": {
+		"my-mcp-server-ae6831b5": {
+			"type": "stdio",
+			"command": "bun",
+			"cwd": "${workspaceFolder}/mcp-server/",
+			"args": ["src/index.ts"]
+		}
+	},
+	"inputs": []
+}
