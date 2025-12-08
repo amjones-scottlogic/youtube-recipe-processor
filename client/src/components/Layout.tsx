@@ -30,7 +30,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <footer className="bg-white shadow mt-auto">
         <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <p className="text-gray-500 text-sm">© 2025 YouTube Recipe Processor</p>
-          <ScreenRecorder />
         </div>
       </footer>
     </div>
