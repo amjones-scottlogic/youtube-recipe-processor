@@ -2,20 +2,25 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import chokidar from "chokidar";
 import path from "node:path";
+import os from "node:os";
 
-const WATCH_DIR = "C:\\Users\\amjones\\Downloads";
-const ALLOWED_EXTENSIONS = [".mp4", ".mov", ".avi", ".wmv", ".mpg", ".mpeg", ".webm"];
+const WATCH_DIR = path.join(os.homedir(), "Downloads");
+const DEFAULT_ALLOWED_EXTENSIONS = [".mp4", ".mov", ".avi", ".wmv", ".mpg", ".mpeg", ".webm"];
 
 export function registerWaitForNewFile(server: McpServer) {
   server.tool(
     "waitForNewFile",
-    "Waits for a new video file to appear in the downloads directory.",
+    "Waits for a new file to appear in the downloads directory.",
     {
       timeoutMs: z.number().optional().describe("Timeout in milliseconds (default 60000)"),
+      allowedExtensions: z.array(z.string()).optional().describe("List of allowed file extensions (e.g. ['.mp4', '.txt']). Defaults to video extensions."),
     },
-    async ({ timeoutMs }) => {
+    async ({ timeoutMs, allowedExtensions }) => {
       const timeout = timeoutMs ?? 60000;
-      console.error(`Watching directory: ${WATCH_DIR} for extensions: ${ALLOWED_EXTENSIONS.join(", ")}`);
+      const extensions = allowedExtensions ?? DEFAULT_ALLOWED_EXTENSIONS;
+      const normalizedExtensions = extensions.map(e => e.toLowerCase());
+
+      console.error(`Watching directory: ${WATCH_DIR} for extensions: ${normalizedExtensions.join(", ")}`);
 
       return new Promise((resolve) => {
         const watcher = chokidar.watch(WATCH_DIR, {
@@ -41,7 +46,7 @@ export function registerWaitForNewFile(server: McpServer) {
 
         watcher.on("add", (filePath) => {
           const ext = path.extname(filePath).toLowerCase();
-          if (ALLOWED_EXTENSIONS.includes(ext)) {
+          if (normalizedExtensions.includes(ext)) {
             console.error(`File found: ${filePath}`);
             clearTimeout(timer);
             watcher.close();

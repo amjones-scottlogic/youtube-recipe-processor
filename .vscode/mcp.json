@@ -1,6 +1,6 @@
 {
 	"servers": {
-		"youtube-recipe-mcp": {
+		"file-watcher-mcp": {
 			"type": "stdio",
 			"command": "bun",
 			"cwd": "${workspaceFolder}/mcp-server",

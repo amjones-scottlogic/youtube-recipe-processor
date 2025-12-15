@@ -4,7 +4,7 @@ import { registerProcessFile } from "./tools/processFile.js";
 import { registerWaitForNewFile } from "./tools/waitForNewFile.js";
 
 const server = new McpServer({
-  name: "youtube-recipe-mcp",
+  name: "file-watcher-mcp",
   version: "1.0.0",
 });
 
@@ -14,7 +14,7 @@ registerWaitForNewFile(server);
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("YouTube Recipe MCP Server running on stdio");
+  console.error("File Watcher MCP Server running on stdio");
 }
 
 main().catch((error) => {

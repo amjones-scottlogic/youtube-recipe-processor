@@ -4,15 +4,21 @@ This is a Model Context Protocol (MCP) server that provides a tool to wait for a
 
 ## Tools
 
-### `waitForFileType`
+### `waitForNewFile`
 
-Polls a directory waiting for a file with a specific extension to appear, then processes it with Gemini 3.
+Waits for a new file to appear in the user's Downloads directory.
 
 **Arguments:**
-- `directory` (string): The directory to watch.
-- `extension` (string): The file extension to wait for (e.g. .mp4).
-- `prompt` (string): The prompt to send to Gemini with the video.
 - `timeoutMs` (number, optional): Timeout in milliseconds (default: 60000).
+- `allowedExtensions` (string[], optional): List of allowed file extensions (e.g. `['.mp4', '.txt']`). Defaults to video extensions (`.mp4`, `.mov`, `.avi`, `.wmv`, `.mpg`, `.mpeg`, `.webm`).
+
+### `processFile`
+
+Processes a video file with Gemini 3 using a given prompt.
+
+**Arguments:**
+- `filePath` (string): The absolute path to the video file.
+- `prompt` (string): The prompt to send to Gemini.
 
 **Environment Variables:**
 - `GEMINI_API_KEY`: Required for Gemini API access.
